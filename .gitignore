@@ -80,3 +80,5 @@ fabric.properties
 bin/*
 generated/*
 meta/*.onnx
+
+.idea/*
