@@ -52,17 +52,20 @@ RUN mkdir -p /opt/opencv/build && cd /opt/opencv/build && \
     make install && \
     ldconfig
 
+WORKDIR /opt
+
 RUN git clone --branch v${ONNXRUNTIME_VERSION} --depth 1 https://github.com/microsoft/onnxruntime.git && \
-    cd onnxruntime && \
+    cd /opt/onnxruntime && \
     ./build.sh --config Release  \
                --parallel \
                --skip_tests \
                --allow_running_as_root && \
+    cd /opt/onnxruntime/build/Linux/Release && \
     make install && \
     ldconfig
 
-RUN rm -rf /opt/*
-
 WORKDIR /workspace
+
+RUN rm -rf /opt/opencv* && rm -rf /opt/onnxruntime*
 
 CMD ["/bin/bash"]
