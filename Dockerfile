@@ -49,23 +49,46 @@ RUN mkdir -p /opt/opencv/build && cd /opt/opencv/build && \
           -D WITH_FFMPEG=ON \
           .. && \
     make -j$(nproc) && \
-    make install && \
-    ldconfig
+    make install
+
+WORKDIR /opt/opencv/build/lib/
+
+RUN <<EOF
+  ar -M <<EOM
+    CREATE "/usr/local/lib/libopencv.a"
+      $(find . -name "*.a" -exec echo "ADDLIB \"{}\"" \;)
+    SAVE
+    END
+  EOM
+EOF
 
 WORKDIR /opt
 
 RUN git clone --branch v${ONNXRUNTIME_VERSION} --depth 1 https://github.com/microsoft/onnxruntime.git && \
     cd /opt/onnxruntime && \
     ./build.sh --config Release  \
+               --build_shared_lib \
                --parallel \
                --skip_tests \
                --allow_running_as_root && \
-    cd /opt/onnxruntime/build/Linux/Release && \
-    make install && \
-    ldconfig
+    cd /opt/onnxruntime/build/Linux/Release/ && make install
+
+WORKDIR /opt/onnxruntime/build/Linux/Release/
+
+RUN <<EOF
+  ar -M <<EOM
+    CREATE "/usr/local/lib/libonnxruntime.a"
+    $(find . -name "*.a" -exec echo "ADDLIB \"{}\"" \;)
+    SAVE
+    END
+  EOM
+EOF
 
 WORKDIR /workspace
 
-RUN rm -rf /opt/opencv* && rm -rf /opt/onnxruntime*
+RUN rm -rf /opt/opencv* && \
+    rm -rf /opt/onnxruntime* && \
+    ln -s /usr/local/opencv4/opencv2/ /usr/local/opencv2
+
 
 CMD ["/bin/bash"]
