@@ -2,22 +2,23 @@
 // Created by willian on 12/12/24.
 //
 
-#include "../include/image.h"
+#include "../include/imageop.h"
 
 cv::Mat ImageOperator::preprocess(const cv::Mat& inputImage, const cv::Size& targetSize) {
     cv::Mat oImg = inputImage.clone();
     cv::cvtColor(oImg, oImg, cv::COLOR_BGR2RGB);
     cv::Mat outputImage(targetSize, CV_8UC3, cv::Scalar(0, 0, 0));
+    input_size = inputImage.size();
 
     if (inputImage.cols >= inputImage.rows) {
-        resizeScales = static_cast<float>(inputImage.cols) / targetSize.height;
-        int newHeight = static_cast<int>(inputImage.rows / resizeScales);
+        resize_scales = static_cast<float>(inputImage.cols) / targetSize.height;
+        int newHeight = static_cast<int>(inputImage.rows / resize_scales);
         cv::resize(oImg, oImg, cv::Size(targetSize.height, newHeight));
         padding = (targetSize.height - newHeight) / 2;
         oImg.copyTo(outputImage(cv::Rect(0, padding, oImg.cols, oImg.rows)));
     } else {
-        resizeScales = static_cast<float>(inputImage.rows) / targetSize.height;
-        int newWidth = static_cast<int>(inputImage.cols / resizeScales);
+        resize_scales = static_cast<float>(inputImage.rows) / targetSize.height;
+        int newWidth = static_cast<int>(inputImage.cols / resize_scales);
         cv::resize(oImg, oImg, cv::Size(newWidth, targetSize.width));
         padding = (targetSize.width - newWidth) / 2;
         oImg.copyTo(outputImage(cv::Rect(padding, 0, oImg.cols, oImg.rows)));

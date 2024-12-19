@@ -12,7 +12,7 @@ public:
     static cv::Mat preprocess(const cv::Mat& inputImage, const cv::Size& targetSize);
     static std::vector<float> toBlob(const cv::Mat& inputImage);
 
-    static inline float resizeScales;
+    static inline float resize_scales;
     static inline int padding;
 
 
