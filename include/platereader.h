@@ -2,17 +2,17 @@
 // Created by willian on 12/18/24.
 //
 
-#ifndef OCR_H
-#define OCR_H
+#ifndef PLATEREADER_H
+#define PLATEREADER_H
 
 #include "onnxmodel.h"
 
-class Ocr final : public ONNXModel {
+class PlateReader final : public ONNXModel {
 public:
-    explicit Ocr(const std::string &model_path);
-    ~Ocr() override;
+    explicit PlateReader(const std::string &model_path);
+    ~PlateReader() override;
 };
 
 
 
-#endif //OCR_H
+#endif //PLATEREADER_H
