@@ -7,13 +7,13 @@
 
 int main(int argc, char *argv[]) {
 
-    if (argc != 4) {
-        std::cerr << "Uso: " << argv[0] << " <model.onnx> <model.onnx> <image.jpg>" << std::endl;
+    if (argc != 2) {
+        std::cerr << "Uso: " << argv[0] << " <image.jpg>" << std::endl;
         return 1;
     }
-    OcrCore *ocr = new OcrCore(argv[1], argv[2]);
+    OcrCore *ocr = new OcrCore();
 
-    cv::Mat inputImage = cv::imread(argv[3]);
+    cv::Mat inputImage = cv::imread(argv[1]);
 
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 
