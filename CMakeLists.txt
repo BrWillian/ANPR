@@ -71,6 +71,16 @@ configure_file(
         ${CMAKE_CURRENT_SOURCE_DIR}/generated/weights.h
 )
 
+execute_process(
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meta/
+        COMMAND rm plate.onnx
+)
+
+execute_process(
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meta/
+        COMMAND rm ocr.onnx
+)
+
 set(ONNX_RUNTIME_LIB_STATIC /usr/local/lib/libonnxruntime.a)
 
 if(NOT EXISTS ${ONNX_RUNTIME_LIB_STATIC})
