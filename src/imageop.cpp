@@ -6,7 +6,7 @@
 
 cv::Mat ImageOperator::preprocess(const cv::Mat& inputImage, const cv::Size& targetSize) {
     cv::Mat oImg = inputImage.clone();
-    cv::cvtColor(oImg, oImg, cv::COLOR_BGR2RGB);
+    //cv::cvtColor(oImg, oImg, cv::COLOR_BGR2RGB);
     cv::Mat outputImage(targetSize, CV_8UC3, cv::Scalar(0, 0, 0));
     input_size = inputImage.size();
 
