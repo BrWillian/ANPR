@@ -11,6 +11,9 @@ class PlateReader final : public ONNXModel {
 public:
     explicit PlateReader(const std::string &model_path);
     ~PlateReader() override;
+
+    void setClasses(const std::vector<std::string> &classes);
+    std::vector<std::string> getClasses();
 };
 
 
