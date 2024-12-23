@@ -2,8 +2,8 @@
 // Created by willian on 12/19/24.
 //
 
-#include "../include/ocrcore.h"
-#include "../generated/weights.h"
+#include "../include/ocr_core.h"
+//#include "../generated/weights.h"
 
 OcrCore::OcrCore() {
     plateFinder = new PlateFinder(plate_onnx, plate_onnx_len);

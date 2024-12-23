@@ -2,7 +2,7 @@
 // Created by willian on 12/18/24.
 //
 
-#include "../include/platereader.h"
+#include "../include/plate_reader.h"
 
 PlateReader::PlateReader(const std::string &model_path)
     : ONNXModel(model_path) {

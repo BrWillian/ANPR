@@ -2,7 +2,7 @@
 // Created by willian on 12/11/24.
 //
 
-#include "../include/platefinder.h"
+#include "../include/plate_finder.h"
 
 PlateFinder::PlateFinder(const std::string& model_path)
     : ONNXModel(model_path) {

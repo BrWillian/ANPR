@@ -5,7 +5,7 @@
 #ifndef PLATEREADER_H
 #define PLATEREADER_H
 
-#include "onnxmodel.h"
+#include "onnx_model.h"
 
 class PlateReader final : public ONNXModel {
 public:

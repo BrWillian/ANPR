@@ -5,8 +5,8 @@
 #ifndef OCRCORE_H
 #define OCRCORE_H
 
-#include "platereader.h"
-#include "platefinder.h"
+#include "plate_reader.h"
+#include "plate_finder.h"
 #include "../meta/types.h"
 #include <regex>
 

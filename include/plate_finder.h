@@ -5,7 +5,7 @@
 #ifndef PLATEFINDER_H
 #define PLATEFINDER_H
 
-#include "onnxmodel.h"
+#include "onnx_model.h"
 
 
 class PlateFinder final : public ONNXModel {

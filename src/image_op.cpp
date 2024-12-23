@@ -2,7 +2,7 @@
 // Created by willian on 12/12/24.
 //
 
-#include "../include/imageop.h"
+#include "../include/image_op.h"
 
 cv::Mat ImageOperator::preprocess(const cv::Mat& inputImage, const cv::Size& targetSize) {
     cv::Mat oImg = inputImage.clone();
