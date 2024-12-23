@@ -2,7 +2,7 @@
 // Created by willian on 12/8/24.
 //
 
-#include "../include/onnxmodel.h"
+#include "../include/onnx_model.h"
 
 ONNXModel::ONNXModel(const std::string& model_path)
     : session_(nullptr), env_(ORT_LOGGING_LEVEL_WARNING, "OnnxRuntime"), memory_info_(Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)) {
@@ -108,7 +108,7 @@ void ONNXModel::WarmUpSession() {
 
         std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
 
-        std::cout<<"Warmup time: "<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()<<"ms"<<std::endl;
+        std::cout<<"Model warmup time: "<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()<<"ms"<<std::endl;
 
     }catch (const std::exception &e) {
         std::cerr<<e.what()<<std::endl;
