@@ -37,7 +37,7 @@ add_library(ANPR SHARED
 )
 
 add_executable(debug
-        main.cpp
+        tests/debug.cpp
 )
 
 target_link_libraries(ANPR PRIVATE ${LIB_DEPENDENCIES})
