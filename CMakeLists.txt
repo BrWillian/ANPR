@@ -86,11 +86,12 @@ set(LIB_DEPENDENCIES ${ONNX_RUNTIME_LIB_STATIC} ${OpenCV_LIBS} ${CMAKE_THREAD_LI
 message(INFO ${LIB_DEPENDENCIES})
 
 add_library(ANPR SHARED
-        src/onnxmodel.cpp
-        src/platefinder.cpp
-        src/imageop.cpp
-        src/platereader.cpp
-        src/ocrcore.cpp
+        src/onnx_model.cpp
+        src/plate_finder.cpp
+        src/image_op.cpp
+        src/plate_reader.cpp
+        src/ocr_core.cpp
+        src/c_wrapper.cpp
 )
 
 add_executable(debug
