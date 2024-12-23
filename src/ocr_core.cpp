@@ -3,7 +3,7 @@
 //
 
 #include "../include/ocr_core.h"
-//#include "../generated/weights.h"
+#include "../generated/weights.h"
 
 OcrCore::OcrCore() {
     plateFinder = new PlateFinder(plate_onnx, plate_onnx_len);
