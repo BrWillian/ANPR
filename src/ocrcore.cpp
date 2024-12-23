@@ -18,48 +18,51 @@ OcrCore::~OcrCore() = default;
 std::vector<OcrResult> OcrCore::getOcr(const cv::Mat &frame) const {
     std::vector<OcrResult> result{};
 
-    auto plates = this->performPlateFinder(frame);
+    try {
+        auto plates = this->performPlateFinder(frame);
 
-    for (auto &plate : plates) {
-        plate.bbox.x = std::max(0, plate.bbox.x - plate.bbox.width / 5);
-        plate.bbox.y = std::max(0, plate.bbox.y - static_cast<int>(plate.bbox.height / 1.5));
-        plate.bbox.width += plate.bbox.width * 2 / 5;
-        plate.bbox.height += plate.bbox.height * (2 / 1.5);
-        plate.bbox.height = std::min(plate.bbox.height, frame.rows - plate.bbox.y);
-        plate.bbox.width = std::min(plate.bbox.width, frame.cols - plate.bbox.x);
+        for (auto &plate : plates) {
+            plate.bbox.x = std::max(0, plate.bbox.x - plate.bbox.width / 5);
+            plate.bbox.y = std::max(0, plate.bbox.y - static_cast<int>(plate.bbox.height / 1.5));
+            plate.bbox.width += plate.bbox.width * 2 / 5;
+            plate.bbox.height += plate.bbox.height * (2 / 1.5);
+            plate.bbox.height = std::min(plate.bbox.height, frame.rows - plate.bbox.y);
+            plate.bbox.width = std::min(plate.bbox.width, frame.cols - plate.bbox.x);
 
-        OcrCore::checkBbox(frame, plate.bbox);
-        cv::Mat image_roi = frame(plate.bbox).clone();
+            OcrCore::checkBbox(frame, plate.bbox);
+            cv::Mat image_roi = frame(plate.bbox).clone();
 
-        std::vector<Detection> chars = this->performPlateReader(image_roi);
+            std::vector<Detection> chars = this->performPlateReader(image_roi);
 
-        auto plateChars = this->buildPlate(chars, image_roi);
+            auto plateChars = this->buildPlate(chars, image_roi);
 
-        auto plateStr = this->assembleStrPlate(plateChars);
+            auto plateStr = this->assembleStrPlate(plateChars);
 
-        auto validatedPlate = this->validateLicensePlate(plateStr);
+            auto validatedPlate = this->validateLicensePlate(plateStr);
 
-        if (validatedPlate.has_value()) {
+            if (validatedPlate.has_value()) {
 
-            std::vector<CharResult> charsResults;
+                std::vector<CharResult> charsResults;
 
-            for (size_t i = 0; i < plateChars.size(); i++) {
-                charsResults.push_back({
-                    plateStr[i],
-                    plateChars[i].confidence,
-                    plateChars[i].bbox,
+                for (size_t i = 0; i < plateChars.size(); i++) {
+                    charsResults.push_back({
+                        plateStr[i],
+                        plateChars[i].confidence,
+                        plateChars[i].bbox,
+                    });
+                }
+
+                result.push_back({
+                    plateStr,
+                    validatedPlate.value(),
+                    plate.confidence,
+                    plate.bbox,
+                    charsResults
                 });
             }
-
-            result.push_back({
-                plateStr,
-                validatedPlate.value(),
-                plate.confidence,
-                plate.bbox,
-                charsResults
-                }
-            );
         }
+    }catch (const std::exception &e) {
+        std::cerr<<e.what()<<std::endl;
     }
 
     return result;
