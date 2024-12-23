@@ -5,6 +5,8 @@
 #ifndef WEIGHTS_H
 #define WEIGHTS_H
 
-@WEIGHTS_HEADER@
+@PLATE_WEIGHTS@
+
+@OCR_WEIGHTS@
 
 #endif //WEIGHTS_H
