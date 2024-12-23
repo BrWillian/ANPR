@@ -51,13 +51,13 @@ extern "C" {
 
     ANPR_API void C_ANPRDELETE(anpr_t* anpr);
 
-    ANPR_API const char* C_ANPRINFERENCE(anpr_t* anpr, unsigned char* imgData, int imgSize);
+    ANPR_API const char* C_ANPRINFERENCE(const anpr_t* anpr, unsigned char* imgData, int imgSize);
 
     ANPR_API const char* C_ANPRVERSION();
 
 #ifdef __cplusplus
 
-    ANPR_API std::string CPP_ANPRINFER(anpr_t* anpr, cv::Mat& img);
+    ANPR_API std::string CPP_ANPRINFERENCE(anpr_t* anpr, cv::Mat& img);
 
     ANPR_API std::string CPP_ANPRVERSION();
 
