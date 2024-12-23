@@ -12,6 +12,65 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUT_DIRECTORY})
 
 file(MAKE_DIRECTORY ${OUT_DIRECTORY})
 
+execute_process(
+        COMMAND git rev-parse --abbrev-ref HEAD
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_BRANCH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+execute_process(
+        COMMAND git log -1 --format=%h
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_COMMIT_HASH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+execute_process(
+        COMMAND git describe --tags --abbrev=0
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE ANPR_VERSION
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+add_definitions(-DGIT_COMMIT_HASH="${GIT_COMMIT_HASH}")
+add_definitions(-DGIT_BRANCH="${GIT_BRANCH}")
+add_definitions(-DANPR_VERSION="${ANPR_VERSION}")
+
+
+message(STATUS "Generating version.h")
+
+configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/meta/version.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/generated/version.h
+)
+
+message(STATUS "Generating weights.h")
+
+execute_process(
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meta/
+        COMMAND tar xf weights.tar.gz
+)
+
+execute_process(
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meta/
+        COMMAND xxd -i plate.onnx
+        OUTPUT_VARIABLE PLATE_WEIGHTS
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+execute_process(
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/meta/
+        COMMAND xxd -i ocr.onnx
+        OUTPUT_VARIABLE OCR_WEIGHTS
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/meta/weights.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/generated/weights.h
+)
+
 set(ONNX_RUNTIME_LIB_STATIC /usr/local/lib/libonnxruntime.a)
 
 if(NOT EXISTS ${ONNX_RUNTIME_LIB_STATIC})
@@ -31,9 +90,7 @@ add_library(ANPR SHARED
         src/platefinder.cpp
         src/imageop.cpp
         src/platereader.cpp
-        include/platereader.h
         src/ocrcore.cpp
-        include/ocrcore.h
 )
 
 add_executable(debug
