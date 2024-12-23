@@ -8,6 +8,7 @@
 #include <onnxruntime/onnxruntime_cxx_api.h>
 #include <opencv2/opencv.hpp>
 #include "../include/imageop.h"
+#include "../meta/types.h"
 #include <numeric>
 #include <chrono>
 #include <vector>
@@ -15,11 +16,6 @@
 #include <cxxabi.h>
 #include <memory>
 
-typedef struct  {
-    int classId;
-    float confidence;
-    cv::Rect bbox;
-} Detection;
 
 class ONNXModel {
 public:

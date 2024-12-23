@@ -7,23 +7,8 @@
 
 #include "platereader.h"
 #include "platefinder.h"
+#include "../meta/types.h"
 #include <regex>
-
-
-struct CharResult {
-    char letter;
-    float confidence;
-    cv::Rect rect;
-};
-
-struct OcrResult {
-    std::string plateString{};
-    bool isMercosul{};
-    float confidence{};
-    cv::Rect rect;
-    std::vector<CharResult> chars{};
-};
-
 
 class OcrCore {
 private:
