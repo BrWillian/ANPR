@@ -1,8 +1,5 @@
 #include <iostream>
-#include "../include/platefinder.h"
-#include "../include/platereader.h"
-#include "../include/imageop.h"
-#include "../include/ocrcore.h"
+#include "../include/ocr_core.h"
 
 
 int main(int argc, char *argv[]) {
@@ -24,12 +21,17 @@ int main(int argc, char *argv[]) {
         std::cout<<"Conf: "<<res.confidence<<std::endl;
         std::cout<<"Bbox: "<<res.rect<<std::endl;
         std::cout<<"Mercosul: "<<res.isMercosul<<std::endl;
+        cv::rectangle(inputImage, res.rect, cv::Scalar(0, 0, 255), 3);
         std::cout<<"---------Chars Debug---------"<<std::endl;
         for (auto &p : res.chars) {
             std::cout<<p.letter<<" " <<p.confidence<<" ";
+            cv::Rect new_rect(p.rect.x + res.rect.x, p.rect.y + res.rect.y, p.rect.width, p.rect.height);
+            cv::rectangle(inputImage, new_rect, cv::Scalar(255, 0, 0), 1);
         }
         std::cout<<std::endl;
         std::cout<<"---------Chars Debug---------"<<std::endl;
+        cv::imshow("result", inputImage);
+        cv::waitKey(0);
     }
 
     std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
