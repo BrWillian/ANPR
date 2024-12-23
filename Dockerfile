@@ -10,6 +10,7 @@ RUN apt update && apt install -y \
     wget \
     unzip \
     curl \
+    xxd \
     libgtk2.0-dev \
     pkg-config \
     libavcodec-dev \
