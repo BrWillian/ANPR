@@ -11,6 +11,7 @@
 class PlateFinder final : public ONNXModel {
 public:
     explicit PlateFinder(const std::string& model_path);
+    explicit PlateFinder(const unsigned char model_weights[], const unsigned int model_weights_size);
     ~PlateFinder() override;
 
     void setClasses(const std::vector<std::string> &classes);

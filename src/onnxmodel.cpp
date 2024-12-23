@@ -16,6 +16,16 @@ ONNXModel::ONNXModel(const std::string& model_path)
     initializeIO();
 }
 
+ONNXModel::ONNXModel(const unsigned char model_weights[], const unsigned int model_weights_size): session_(nullptr), env_(ORT_LOGGING_LEVEL_WARNING, "OnnxRuntime"), memory_info_(Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)) {
+    Ort::SessionOptions session_options;
+    session_options.SetGraphOptimizationLevel(ORT_ENABLE_EXTENDED);
+    session_options.SetLogSeverityLevel(3);
+
+    session_ = Ort::Session(env_, model_weights, model_weights_size, session_options);
+
+    initializeIO();
+}
+
 ONNXModel::~ONNXModel() = default;
 
 float* ONNXModel::infer(const std::vector<float> &input_data) {

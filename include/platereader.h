@@ -10,6 +10,7 @@
 class PlateReader final : public ONNXModel {
 public:
     explicit PlateReader(const std::string &model_path);
+    explicit PlateReader(const unsigned char model_weights[], const unsigned int model_weights_size);
     ~PlateReader() override;
 
     void setClasses(const std::vector<std::string> &classes);

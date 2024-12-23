@@ -21,6 +21,8 @@ class ONNXModel {
 public:
     explicit ONNXModel(const std::string& model_path);
 
+    explicit ONNXModel(const unsigned char model_weights[], const unsigned int model_weights_size);
+
     virtual ~ONNXModel();
 
     float* infer(const std::vector<float>& input_data);
