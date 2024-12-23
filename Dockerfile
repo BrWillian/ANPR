@@ -51,7 +51,7 @@ RUN mkdir -p /opt/opencv/build && cd /opt/opencv/build && \
     make -j$(nproc) && \
     make install
 
-WORKDIR /opt/opencv/build/lib/
+WORKDIR /opt/opencv/build/
 
 RUN <<EOF
   ar -M <<EOM
@@ -88,7 +88,7 @@ WORKDIR /workspace
 
 RUN rm -rf /opt/opencv* && \
     rm -rf /opt/onnxruntime* && \
-    ln -s /usr/local/opencv4/opencv2/ /usr/local/opencv2
+    ln -s /usr/local/include/opencv4/opencv2/ /usr/local/include/opencv2
 
 
 CMD ["/bin/bash"]
