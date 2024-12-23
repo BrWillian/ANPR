@@ -3,10 +3,11 @@
 //
 
 #include "../include/ocrcore.h"
+#include "../generated/weights.h"
 
 OcrCore::OcrCore() {
-    plateFinder = new PlateFinder("");
-    plateReader = new PlateReader("");
+    plateFinder = new PlateFinder(plate_onnx, plate_onnx_len);
+    plateReader = new PlateReader(ocr_onnx, ocr_onnx_len);
 }
 OcrCore::OcrCore(const std::string &plateModelPath, const std::string &plateReaderPath) {
     plateFinder = new PlateFinder(plateModelPath);
