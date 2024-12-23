@@ -39,7 +39,7 @@ private:
     std::string assembleStrPlate(const std::vector<Detection> &chars) const;
 
     static std::optional<bool> validateLicensePlate(const std::string &plateStr);
-    static std::vector<Detection> buildPlate(const std::vector<Detection> &chars, cv::Mat &image_roi);
+    static std::vector<Detection> buildPlate(const std::vector<Detection> &chars, const cv::Mat &image_roi);
 
 
 public:

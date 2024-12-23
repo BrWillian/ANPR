@@ -17,52 +17,47 @@ OcrCore::~OcrCore() = default;
 
 std::vector<OcrResult> OcrCore::getOcr(const cv::Mat &frame) const {
     std::vector<OcrResult> result{};
+    std::vector<CharResult> charsResults{};
 
-    try {
-        auto plates = this->performPlateFinder(frame);
+    auto plates = this->performPlateFinder(frame);
 
-        for (auto &plate : plates) {
-            plate.bbox.x = std::max(0, plate.bbox.x - plate.bbox.width / 5);
-            plate.bbox.y = std::max(0, plate.bbox.y - static_cast<int>(plate.bbox.height / 1.5));
-            plate.bbox.width += plate.bbox.width * 2 / 5;
-            plate.bbox.height += plate.bbox.height * (2 / 1.5);
-            plate.bbox.height = std::min(plate.bbox.height, frame.rows - plate.bbox.y);
-            plate.bbox.width = std::min(plate.bbox.width, frame.cols - plate.bbox.x);
+    for (auto &plate : plates) {
+        plate.bbox.x = std::max(0, plate.bbox.x - plate.bbox.width / 5);
+        plate.bbox.y = std::max(0, plate.bbox.y - static_cast<int>(plate.bbox.height / 1.5));
+        plate.bbox.width += plate.bbox.width * 2 / 5;
+        plate.bbox.height += plate.bbox.height * (2 / 1.5);
+        plate.bbox.height = std::min(plate.bbox.height, frame.rows - plate.bbox.y);
+        plate.bbox.width = std::min(plate.bbox.width, frame.cols - plate.bbox.x);
 
-            OcrCore::checkBbox(frame, plate.bbox);
-            cv::Mat image_roi = frame(plate.bbox).clone();
+        OcrCore::checkBbox(frame, plate.bbox);
+        cv::Mat image_roi = frame(plate.bbox).clone();
 
-            std::vector<Detection> chars = this->performPlateReader(image_roi);
+        std::vector<Detection> chars = this->performPlateReader(image_roi);
 
-            auto plateChars = this->buildPlate(chars, image_roi);
+        auto plateChars = this->buildPlate(chars, image_roi);
 
-            auto plateStr = this->assembleStrPlate(plateChars);
+        auto plateStr = this->assembleStrPlate(plateChars);
 
-            auto validatedPlate = this->validateLicensePlate(plateStr);
+        auto validatedPlate = this->validateLicensePlate(plateStr);
 
-            if (validatedPlate.has_value()) {
-
-                std::vector<CharResult> charsResults;
-
-                for (size_t i = 0; i < plateChars.size(); i++) {
-                    charsResults.push_back({
-                        plateStr[i],
-                        plateChars[i].confidence,
-                        plateChars[i].bbox,
-                    });
-                }
-
-                result.push_back({
-                    plateStr,
-                    validatedPlate.value(),
-                    plate.confidence,
-                    plate.bbox,
-                    charsResults
+        if (validatedPlate.has_value()) {
+            charsResults.clear();
+            for (size_t i = 0; i < plateChars.size(); i++) {
+                charsResults.push_back({
+                    plateStr[i],
+                    plateChars[i].confidence,
+                    plateChars[i].bbox,
                 });
             }
+
+            result.push_back({
+                plateStr,
+                validatedPlate.value(),
+                plate.confidence,
+                plate.bbox,
+                charsResults
+            });
         }
-    }catch (const std::exception &e) {
-        std::cerr<<e.what()<<std::endl;
     }
 
     return result;
@@ -82,26 +77,26 @@ std::vector<Detection> OcrCore::performPlateReader(const cv::Mat &frame) const {
     return plateReader->postProcess(output_tensor);
 }
 
-std::vector<Detection> OcrCore::buildPlate(const std::vector<Detection> &chars, cv::Mat &image_roi) {
+std::vector<Detection> OcrCore::buildPlate(const std::vector<Detection> &chars, const cv::Mat &image_roi) {
     if (chars.size() < 7) {
         return {};
     }
 
-    std::vector<Detection> plateTmp(chars.begin(), chars.begin() + std::min(7, (int)chars.size()));
+    std::vector<Detection> plateTmp(chars.begin(), chars.begin() + std::min(7, static_cast<int>(chars.size())));
 
     if (image_roi.cols < image_roi.rows * 1.4) {
-        std::sort(plateTmp.begin(), plateTmp.end(), compareByHeight);
+        std::ranges::sort(plateTmp, compareByHeight);
 
         std::vector<Detection> topRow(plateTmp.begin(), plateTmp.begin() + 3);
         std::vector<Detection> bottomRow(plateTmp.end() - 4, plateTmp.end());
 
-        std::sort(topRow.begin(), topRow.end(), compareByLength);
-        std::sort(bottomRow.begin(), bottomRow.end(), compareByLength);
+        std::ranges::sort(topRow, compareByLength);
+        std::ranges::sort(bottomRow, compareByLength);
 
         plateTmp.insert(plateTmp.end(), topRow.begin(), topRow.end());
         plateTmp.insert(plateTmp.end(), bottomRow.begin(), bottomRow.end());
     } else {
-        std::sort(plateTmp.begin(), plateTmp.end(), compareByLength);
+        std::ranges::sort(plateTmp, compareByLength);
     }
 
     return plateTmp;
