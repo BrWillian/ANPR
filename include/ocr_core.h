@@ -15,7 +15,7 @@ private:
     PlateFinder *plateFinder{};
     PlateReader *plateReader{};
 
-    const cv::Size inputPlateFinderModel = cv::Size(320, 320);
+    const cv::Size inputPlateFinderModel = cv::Size(640, 640);
     const cv::Size inputPlateReaderModel = cv::Size(320, 320);
 
     std::vector<Detection> performPlateFinder(const cv::Mat &frame) const;
@@ -24,7 +24,7 @@ private:
     std::string assembleStrPlate(const std::vector<Detection> &chars) const;
 
     static std::optional<bool> validateLicensePlate(const std::string &plateStr);
-    static std::vector<Detection> buildPlate(const std::vector<Detection> &chars, const cv::Mat &image_roi);
+    static std::vector<Detection> buildPlate( const cv::Mat &image_roi, std::vector<Detection> &chars);
 
 
 public:

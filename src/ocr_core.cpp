@@ -35,7 +35,7 @@ std::vector<OcrResult> OcrCore::getOcr(const cv::Mat &frame) const {
 
         std::vector<Detection> chars = this->performPlateReader(image_roi);
 
-        auto plateChars = this->buildPlate(chars, image_roi);
+        auto plateChars = this->buildPlate(image_roi, chars);
 
         auto plateStr = this->assembleStrPlate(plateChars);
 
@@ -78,22 +78,23 @@ std::vector<Detection> OcrCore::performPlateReader(const cv::Mat &frame) const {
     return plateReader->postProcess(output_tensor);
 }
 
-std::vector<Detection> OcrCore::buildPlate(const std::vector<Detection> &chars, const cv::Mat &image_roi) {
+std::vector<Detection> OcrCore::buildPlate(const cv::Mat &image_roi, std::vector<Detection> &chars) {
     if (chars.size() < 7) {
         return {};
     }
-
+    std::ranges::sort(chars, compareByHeight);
     std::vector<Detection> plateTmp(chars.begin(), chars.begin() + std::min(7, static_cast<int>(chars.size())));
 
-    if (image_roi.cols < image_roi.rows * 1.4) {
-        std::ranges::sort(plateTmp, compareByHeight);
+    bool isMotocycle = (image_roi.cols < image_roi.rows * 1.4);
 
+    if (isMotocycle) {
         std::vector<Detection> topRow(plateTmp.begin(), plateTmp.begin() + 3);
         std::vector<Detection> bottomRow(plateTmp.end() - 4, plateTmp.end());
 
         std::ranges::sort(topRow, compareByLength);
         std::ranges::sort(bottomRow, compareByLength);
 
+        plateTmp.clear();
         plateTmp.insert(plateTmp.end(), topRow.begin(), topRow.end());
         plateTmp.insert(plateTmp.end(), bottomRow.begin(), bottomRow.end());
     } else {
